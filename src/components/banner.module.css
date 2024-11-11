@@ -1,0 +1,22 @@
+.banner{
+    display: block;
+    padding: 5px;
+    margin: 0;
+    width: 100vw;
+    height: 80vh;
+    position: relative;
+}
+
+.bannerText{
+    position: relative;
+    top: 100px;
+    z-index: 20;
+    text-align: center;
+    color: rgb(90, 14, 226);
+    background-color: rgb(240, 248, 255);
+}
+
+.bannerWrap{
+    display: flex;
+    justify-content: center;
+}
