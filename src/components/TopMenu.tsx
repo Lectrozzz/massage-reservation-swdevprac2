@@ -1,6 +1,4 @@
 'use client'
-import styles from './topmenu.module.css'
-import Image from 'next/image';
 import TopMenuItem from './TopMenuItem';
 import { Link } from '@mui/material';
 import useUserStore from '@/hooks/useUser';
