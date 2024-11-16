@@ -1,25 +1,43 @@
+'use client'
 import styles from './topmenu.module.css'
 import Image from 'next/image';
 import TopMenuItem from './TopMenuItem';
 import { Link } from '@mui/material';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
+import useUserStore from '@/hooks/useUser';
 
-export default async function TopMenu() {
-    const session = await getServerSession(authOptions)
+
+export default function TopMenu() {
+    const {user, logout} = useUserStore()
+
+    const signOut = () =>{
+        logout()
+    }
 
     return (
-            <div className="h-[50px] bg-[white] fixed z-30 flex flex-row-reverse border-y-[lightgrey] border-t border-solid border-b top-0 inset-x-0">
-                <Image src={'/img/logo.png'} className={styles.logoimg} alt="logo" width={0} height={0} sizes='100vh'/>
-                <TopMenuItem title="Booking" pageRef='/booking'/>
+            <div className="h-[50px] bg-[white] fixed z-30 flex flex-row border-y-[lightgrey] border-t border-solid border-b top-0 inset-x-0">
                 <div className='flex flex-row absolute left-0 h-full'>
+                    <TopMenuItem title="Home" pageRef='/'/>
+                    <div className='text-gray-400 flex h-full items-center font-extralight'>|</div>
+                    <TopMenuItem title="Shops" pageRef='/shops'/>
+                </div>
+                <div className='flex flex-row absolute right-0 h-full'>
                 {
-                    session? <Link href="/api/auth/signout">
-                        <div className='flex items-center h-full px-2 text-center text-[10pt] text-[grey] my-auto font-mono hover:font-bold'>
-                        {session.user?.name} | Sign-Out </div></Link>
-                    :<Link href="/api/auth/signin"><div className='flex items-center h-full px-2 text-center text-[10pt] text-[grey] my-auto font-mono hover:font-bold'>Sign-In</div></Link>
+                    user? 
+                    <>
+                        <TopMenuItem title="My Booking" pageRef='/mybooking'/>
+                        <div className='flex items-center h-full px-2 text-center text-[11pt] text-[grey] my-auto font-mono'>
+                            {user.name} |
+                        </div>
+                        <div className='flex items-center h-full px-2 text-center text-[11pt] text-[grey] my-auto font-mono hover:font-bold cursor-pointer' onClick={signOut}>
+                            Sign-Out
+                        </div>
+                    </> 
+                    :<>
+                        <Link href="/register"><div className='flex items-center h-full px-2 text-center text-[11pt] text-[grey] my-auto font-mono hover:font-bold'>Register</div></Link>
+                        <div className='text-gray-400 flex h-full items-center font-extralight'>|</div>
+                        <Link href="/login"><div className='flex items-center h-full px-2 text-center text-[11pt] text-[grey] my-auto font-mono hover:font-bold'>Login</div></Link>
+                    </>
                 }
-                <TopMenuItem title="My Booking" pageRef='/mybooking'/>
                 </div>
             </div>
     );
