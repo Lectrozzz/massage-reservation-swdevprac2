@@ -1,10 +1,9 @@
-"use client"
-import BookingList from "@/components/BookingList"
-
-export default function MyBookingPage() {
+const MyReservation = () =>{
     return (
-        <main>
-            <BookingList></BookingList>
-        </main>
+        <div>
+            MyReservation
+        </div>
     )
 }
+
+export default MyReservation;

@@ -25,3 +25,18 @@ export interface BookingItem {
     hospital: string;
     bookDate: string;
   }
+
+export interface User {
+    name: string;  
+    email: string;
+    tel: string;
+    role: string; 
+}
+
+export enum PageStatus {
+    DEFAULT = 'default',
+    LOADING = 'loading',
+    ERROR = 'error',
+    SUCCESS = 'success',
+}
+
