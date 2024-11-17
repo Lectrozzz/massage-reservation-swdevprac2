@@ -1,7 +1,7 @@
 'use client'
 import useUserStore from "@/hooks/useUser";
 import dayjs, { Dayjs } from "dayjs";
-import getBookingByID from "@/libs/getBookingByID";
+import getBookingByID from "@/libs/bookings/getBookingByID";
 import { useEffect, useState } from "react";
 import { BookingItem } from "../../../../interfaces";
 import { useRouter } from "next/navigation";
@@ -9,8 +9,8 @@ import { FormControl, Select, TextField, Button, InputLabel, MenuItem, SelectCha
 import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import removeBookingByID from "@/libs/removeBookingByID";
-import updateBookingByID from "@/libs/updateBookingByID";
+import removeBookingByID from "@/libs/bookings/removeBookingByID";
+import updateBookingByID from "@/libs/bookings/updateBookingByID";
 import Modal from '@/components/Modal'
 import 'dayjs/locale/en-gb'
 

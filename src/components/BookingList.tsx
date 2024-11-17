@@ -2,7 +2,7 @@
 import useUserStore from "@/hooks/useUser"
 import { useEffect, useState } from "react"
 import dayjs from "dayjs"
-import getBookings from "@/libs/getBookings"
+import getBookings from "@/libs/bookings/getBookings"
 import { Button, Link } from "@mui/material"
 import { removeBooking } from "@/redux/features/bookSlice"
 import { BookingItem, PageStatus } from "../../interfaces"

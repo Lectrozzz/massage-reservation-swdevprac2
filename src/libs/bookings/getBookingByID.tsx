@@ -1,4 +1,4 @@
-import { BookingItem } from "../../interfaces"
+import { BookingItem } from "../../../interfaces"
 
 export default async function getBookingByID(token:string,bid:string):Promise<BookingItem> {
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL +"/api/v1/bookings/"+bid,

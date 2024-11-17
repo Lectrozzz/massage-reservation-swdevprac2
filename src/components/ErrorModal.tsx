@@ -6,10 +6,9 @@ type Props = {
     isOpen: boolean;
     text: string;
     onClose: () => void;
-    handler: () => void;
 }
 
-const Modal = ({ isOpen, text, onClose, handler }: Props) => {
+const Modal = ({ isOpen, text, onClose}: Props) => {
   if (!isOpen) return null;
 
   return (
@@ -20,7 +19,6 @@ const Modal = ({ isOpen, text, onClose, handler }: Props) => {
         </div>
         <div className="flex wifull justify-center gap-2">
             <Button className='bg-red-500 hover:bg-red-400 text-white' onClick={onClose}>Close</Button>
-            <Button className='bg-green-500 hover:bg-green-400 text-white' onClick={handler}>Confirm</Button>
         </div>
       </div>
     </div>
