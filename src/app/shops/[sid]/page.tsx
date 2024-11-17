@@ -8,6 +8,8 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import deleteShop from '@/libs/shops/deleteShop'
 import Modal from '@/components/Modal'
+import useUserStore from '@/hooks/useUser'
+import updateShop from '@/libs/shops/updateShop'
 
 const shopDetailPage = () => {
 
@@ -22,22 +24,66 @@ const shopDetailPage = () => {
     const [postalcode, setPostalcode] = useState<string>("")
     const [tel, setTel] = useState<string>("")
     const [picture, setPicture] = useState<string>("")
+    const [newPictureUrl, setNewPictureUrl] = useState<string>("")
     const [isEditable, setIsEditable] = useState<boolean>(false)
+
+    const [showError, setShowError] = useState<boolean>(false)
+    const [errorMessage, setErrorMessage] = useState<string>("")
+
+    const {token, user} = useUserStore()
 
     const regex = /https?:\/\/.*\.(?:png|jpg|jpeg|gif)/
     const pictureUrl = (regex.test(picture)) ? picture : '/img/default_shop.jpg'
 
     const createBookingHandler = () => {
+        if(!token){
+            router.push("/login")
+            return
+        }
         console.log("Create booking")
         router.push(`/shops/${params.sid}/booking`)
     }
 
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false)
+    const updateShopHandler = async () => {
+        if(!token) return
+        try{
+            //TODO: update shop
+            const shopData = {
+                name: shopName,
+                address: shopAddress,
+                priceLevel: priceLevel,
+                province: province,
+                postalcode: postalcode,
+                tel: tel,
+                picture: newPictureUrl
+            }
+            console.log("Update shop")
+            const response = await updateShop({shopId: params.sid, shopData, token})
+            router.push(`/shops`)
+        }
+        catch(e){
+            console.error(e)
+            setIsSaveModalOpen(false)
+            setShowError(true)
+            setErrorMessage("Cannot update shop")  
+        }
+    }
 
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const deleteShopHandler = async () => {
-        console.log("Delete shop")
-        await deleteShop(params.sid)
-        router.push(`/shops`)
+        if(!token) return
+        try{
+            console.log("Delete shop")
+            await deleteShop(params.sid, token)
+            router.push(`/shops`)
+        }
+        catch(e){
+            console.error(e)
+            setIsDeleteModalOpen(false)
+            setShowError(true)
+            setErrorMessage("Cannot delete shop")  
+        }
     }
 
     const fetchData = async () => {
@@ -50,6 +96,7 @@ const shopDetailPage = () => {
         setPostalcode(shopData.postalcode)
         setTel(shopData.tel)
         setPicture(shopData.picture)
+        setNewPictureUrl(shopData.picture)
     }
 
     useEffect(() => {
@@ -70,12 +117,12 @@ const shopDetailPage = () => {
                     />
                 </div>
                 <div className='w-full'>
-                    <div className='w-full'>
+                    <div className='w-full relative pb-4'>
                         <FormControl className="w-full flex space-y-3 flex-col">
                             <TextField disabled={!isEditable} variant="standard" name="Name" label="Name" value={shopName} onChange={(e)=>{setShopName(e.target.value)}}/>
                             <TextField disabled={!isEditable} variant="standard" name="Address" label="Address" value={shopAddress} onChange={(e)=>{setShopAddress(e.target.value)}}/>
                             <FormControl>
-                                <InputLabel className="-left-[14px]">Role</InputLabel>
+                                <InputLabel className="-left-[14px]">Price Level</InputLabel>
                                 <Select disabled={!isEditable} variant="standard" id="hospital" label="Hospital" value={priceLevel.toString()} required onChange={(e: SelectChangeEvent)=>{setPriceLevel(Number(e.target.value))}}>
                                     <MenuItem value="1">1</MenuItem>
                                     <MenuItem value="2">2</MenuItem>
@@ -86,13 +133,25 @@ const shopDetailPage = () => {
                             <TextField disabled={!isEditable} variant="standard" name="Province" label="Province" value={province} onChange={(e)=>{setProvince(e.target.value)}}/>
                             <TextField disabled={!isEditable} variant="standard" name="Postalcode" label="Postalcode" value={postalcode} onChange={(e)=>{setPostalcode(e.target.value)}}/>
                             <TextField disabled={!isEditable} variant="standard" name="Tel" label="Tel" value={tel} onChange={(e)=>{setTel(e.target.value)}}/>
+                            <TextField disabled={!isEditable} variant="standard" name="Picture" label="Picture" value={newPictureUrl} onChange={(e)=>{setNewPictureUrl(e.target.value)}}/>
                         </FormControl>
+                        <div className='absolute right-0'>
+                            {showError ? <p className="text-red-500 text-sm my-2">{errorMessage}</p> : null}
+                        </div>
                     </div>
                     <div className='flex justify-end mt-4 gap-4'>
-                        <Button className='bg-red-500 hover:bg-red-400 text-white' onClick={()=>setIsDeleteModalOpen(true)}>Delete</Button>
-                        <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} handler={deleteShopHandler} text={"Are you sure that you want to delete this shop?"} />
-                        <Button className='bg-orange-400 hover:bg-orange-300 text-white' onClick={()=>setIsEditable((isEditable)=> !isEditable)}>Edit</Button>
-                        <Button disabled={!isEditable} className='bg-green-600 hover:bg-green-500 text-white disabled:bg-gray-500 disabled:text-white'>Save</Button>
+                        {
+                            user?.role === "admin" && token ?
+                                <>
+                                    <Button className='bg-red-500 hover:bg-red-400 text-white' onClick={()=>setIsDeleteModalOpen(true)}>Delete</Button>
+                                    <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} handler={deleteShopHandler} text={"Are you sure that you want to delete this shop?"} />
+                                    <Button className='bg-orange-400 hover:bg-orange-300 text-white' onClick={()=>setIsEditable((isEditable)=> !isEditable)}>Edit</Button>
+                                    <Button disabled={!isEditable} className='bg-green-600 hover:bg-green-500 text-white disabled:bg-gray-500 disabled:text-white' onClick={()=> setIsSaveModalOpen(true)}>Save</Button>
+                                    <Modal isOpen={isSaveModalOpen} onClose={() => setIsSaveModalOpen(false)} handler={updateShopHandler} text={"Are you sure that you want to update this shop information?"} />
+                                </>
+                            : null
+                        }  
+                        
                         <Button className='bg-sky-500 hover:bg-sky-400 text-white' onClick={createBookingHandler}>Reserve</Button>
                     </div>
                 </div>

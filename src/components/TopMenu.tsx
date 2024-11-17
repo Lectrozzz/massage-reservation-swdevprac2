@@ -2,13 +2,16 @@
 import TopMenuItem from './TopMenuItem';
 import { Link } from '@mui/material';
 import useUserStore from '@/hooks/useUser';
+import { useRouter } from 'next/navigation';
 
 
 export default function TopMenu() {
     const {user, logout} = useUserStore()
+    const router = useRouter()
 
     const signOut = () =>{
         logout()
+        router.push('/')
     }
 
     return (
