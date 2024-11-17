@@ -18,13 +18,22 @@ export interface HospitalJson {
     data: HospitalItem[]
   }
 
-export interface BookingItem {
-    name: string;
-    surname: string;
-    id: string;
-    hospital: string;
-    bookDate: string;
+  export interface BookingItem {
+    _id: string;
+    bookingDate: Date;
+    serviceMinute: number;
+    user: string;
+    shop: Shop;
+    createdAt: string;
+    __v: number;
   }
+export interface Shop {
+    _id: string;
+    name: string;
+    address: string;
+    tel: string;
+    id: string;
+}
 
 export interface User {
     name: string;  
