@@ -1,9 +1,9 @@
-const MyReservation = () =>{
-    return (
-        <div>
-            MyReservation
-        </div>
-    )
-}
+import BookingList from '@/components/BookingList';
 
-export default MyReservation;
+export default function MyBooking() {
+    return (
+        <main>
+            <BookingList></BookingList>
+        </main>
+    )
+};
