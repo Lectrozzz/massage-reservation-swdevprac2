@@ -18,9 +18,9 @@ export interface HospitalJson {
     data: HospitalItem[]
   }
 
-  export interface BookingItem {
+export interface BookingItem {
     _id: string;
-    bookingDate: Date;
+    bookingDate: string;
     serviceMinute: number;
     user: string;
     shop: Shop;
