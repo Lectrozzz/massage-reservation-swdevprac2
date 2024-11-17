@@ -30,7 +30,8 @@ export interface User {
     name: string;  
     email: string;
     tel: string;
-    role: string; 
+    role: string;
+    id: string;
 }
 
 export enum PageStatus {

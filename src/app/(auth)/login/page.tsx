@@ -30,6 +30,7 @@ const LoginPage = () => {
                 email: userProfile.email,
                 tel: userProfile.tel,
                 role: userProfile.role,
+                id: userProfile._id
             }
             login(userData, token)
             router.push('/')
