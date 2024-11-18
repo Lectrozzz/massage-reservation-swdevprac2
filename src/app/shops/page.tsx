@@ -15,7 +15,7 @@ const shopItem = (shop: any) => {
     const pictureUrl = (regex.test(shop.picture)) ? shop.picture : '/img/default_shop.jpg'
     console.log("picture url",pictureUrl)
     return (
-        <div key={shop.id} className="bg-pink-200 rounded-lg w-full px-5 py-5 flex flex-auto flex-col justify-center mx-auto">
+        <div key={shop.id} className="bg-[#eba244] rounded-lg w-full px-5 py-5 flex flex-auto flex-col justify-center mx-auto">
             <div>
                 <Link href={`/shops/${shop.id}`}>
                     <Image
@@ -82,7 +82,7 @@ const shopsPage = () => {
                     }
                 </div>
             </div>
-            <div className="grid grid-cols-3 gap-3 w-full mt-4">
+            <div className="grid grid-cols-3 gap-3 w-full mt-4 px-5">
                 {shops.map((shop) => shopItem(shop))}
             </div>
         </main>

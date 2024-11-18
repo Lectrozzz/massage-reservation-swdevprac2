@@ -5,8 +5,8 @@ import getBookingByID from "@/libs/bookings/getBookingByID";
 import { useEffect, useState } from "react";
 import { BookingItem } from "../../../../interfaces";
 import { useRouter } from "next/navigation";
-import { FormControl, Select, TextField, Button, InputLabel, MenuItem, SelectChangeEvent } from "@mui/material";
-import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
+import { FormControl, Select, TextField, Button, InputLabel, MenuItem, SelectChangeEvent, CircularProgress } from "@mui/material";
+import { DateField } from "@mui/x-date-pickers/DateField";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import removeBookingByID from "@/libs/bookings/removeBookingByID";
@@ -48,8 +48,6 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
     const updateBookingDetail = async () => {
         if (!token) return
         if (bookingInfo && bookingDate){
-            console.log(bookingDate)
-            console.log(bookingInfo.createdAt)
             const toSendBookingDate = bookingDate.split('T')[0]
             const toSendCreatedAt = bookingInfo.createdAt.split('T')[0]
             const booking = {
@@ -57,12 +55,9 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
                 serviceMinute: serviceMinute,
                 createdAt: toSendCreatedAt
             }
-            console.log(token)
-            console.log(bookingInfo._id)
-            console.log(booking)
             const updateDetail = await updateBookingByID(token,bookingInfo?._id,booking)
             console.log(updateDetail)
-            getBookingDetail()
+            router.push(`/mybooking`)
             setIsSaveModalOpen(false)
         }
     }
@@ -79,26 +74,30 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
             </main>
         )
     return (
-        <main className="flex text-center p-5 justify-center">
+        <main className="flex flex-col text-center p-5 justify-center items-center">
+            <div className="text-3xl font-semibold mb-5 drop-shadow-md">Booking Info</div>
         {bookingInfo? 
         
-        <div className="bg-slate-200 rounded-lg space-x-5 space-y-2 w-1/3 px-10 py-5 flex flex-col justify-center mx-auto ">
-            <FormControl className="text-black w-auto space-y-2">
-                <div className="text-2xl">Booking Info</div>
-                <div className="text-l">{bookingInfo.shop.name}</div>
-                <TextField variant="standard" className="text-sm pointer-events-none" name="Name" label="Name" aria-readonly value={user?.name}/>
+        <div className="bg-gradient-to-br from-[#a2ab45] to-[#D3D989] rounded-lg space-x-5 space-y-2 w-1/3 px-10 py-7 flex flex-col justify-center mx-auto drop-shadow-xl">
+
+            <FormControl className="text-white w-auto space-y-2">
+                <div className="text-2xl font-bold pb-5 d">{bookingInfo.shop.name}</div>
+                <TextField variant="standard" className="text-sm pointer-events-none" name="Name" label="Name" value={user?.name}/>
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
-                <DateTimeField variant="standard" name="Date" label="Date" defaultValue ={dayjs(bookingDate)} value={dayJSdate} disabled={!editable} onChange={(newValue)=>
+                {/* <div className="flex w-full"> */}
+                    {/* <CircularProgress className="absolute right-0"/> */}
+                <DateField className={"w-full " + editable? '':'pointer-events-none'} variant="standard" name="Date" label="Date" defaultValue ={dayjs(bookingDate)} value={dayJSdate} onChange={(newValue)=>
                     {if (newValue) 
                     {
                         setBookingDate(newValue.toISOString());
                         setDayJSDate(newValue)
                     }
                      console.log(newValue?.toISOString())}}/>
+                {/* </div> */}
                 </LocalizationProvider>
                 <FormControl className="text-left">
                     <InputLabel variant="standard">Session Duration:</InputLabel>
-                    <Select variant="standard" disabled={!editable} value = {serviceMinute.toString()} onChange={(e: SelectChangeEvent)=>{setServiceMinute(parseInt(e.target.value)); console.log(serviceMinute)}}>
+                    <Select variant="standard" className={editable? '':'pointer-events-none'} value = {serviceMinute.toString()} onChange={(e: SelectChangeEvent)=>{setServiceMinute(parseInt(e.target.value)); console.log(serviceMinute)}}>
                         <MenuItem value="60">60 minutes</MenuItem>
                         <MenuItem value="90">90 minutes</MenuItem>
                         <MenuItem value="120">120 minutes</MenuItem> 
@@ -107,7 +106,7 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
                 <div className="flex flex-row justify-end space-x-1">
                     <Button onClick={()=>setIsDeleteModalOpen(true)} className="bg-red-500 text-white">Delete</Button>
                     <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} handler={removeBooking} text={"Are you sure that you want to delete this booking?"} />
-                    <Button onClick={()=>setEditable(!editable)} className="bg-sky-500 text-white">Edit</Button>
+                    <Button onClick={()=>setEditable(!editable)} className="bg-sky-500 text-white">{editable ? "Editing":"Edit"}</Button>
                     <Button disabled={!editable} onClick={()=>setIsSaveModalOpen(true)} className="bg-green-300">Save</Button>
                     <Modal isOpen={isSaveModalOpen} onClose={() => setIsSaveModalOpen(false)} handler={updateBookingDetail} text={"Are you sure that you want to make changes to this booking?"} />
                     </div>

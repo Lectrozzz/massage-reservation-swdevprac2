@@ -53,7 +53,7 @@ const LoginPage = () => {
                 <FormControl className="w-auto flex space-y-3 flex-col">
                     <TextField variant="standard" name="Email" label="Email" value={email} required onChange={(e)=>{setEmail(e.target.value)}}/>
                     <TextField variant="standard" name="Password" label="Password" value={password} type="password" required onChange={(e)=>{setPassword(e.target.value)}}/>
-                    <Button name="Register" className="p-2 rounded-lg bg-gradient-to-l from-purple-400 to-pink-500 text-white hover:text-gray-400" onClick={()=>loginUser()}>Login</Button>
+                    <Button name="Register" className="p-2 rounded-lg bg-gradient-to-l from-[#84581b] to-[#bfbec5]] text-white hover:from-[#a08956]" onClick={()=>loginUser()}>Login</Button>
                 </FormControl>
             </div>
         </main>

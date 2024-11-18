@@ -15,7 +15,7 @@ export default function TopMenu() {
     }
 
     return (
-            <div className="h-[50px] bg-[white] fixed z-30 flex flex-row border-y-[lightgrey] border-t border-solid border-b top-0 inset-x-0">
+            <div className="h-[50px] bg-[#fff6e0] fixed z-30 flex flex-row border-y-[lightgrey] border-t border-solid border-b top-0 inset-x-0">
                 <div className='flex flex-row absolute left-0 h-full'>
                     <TopMenuItem title="Home" pageRef='/'/>
                     <div className='text-gray-400 flex h-full items-center font-extralight'>|</div>
