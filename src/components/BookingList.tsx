@@ -80,8 +80,18 @@ export default function BookingList() {
         }
         setSort(option)
     }
-    const filterBooking = () => {
-
+    const filterBooking = (minuteList: string[]) => {
+        if (minuteList.length === 0){
+            setBookItems(originalBookItems)
+        }
+        else if(minuteList.includes("Default")){
+            setBookItems(originalBookItems)
+        }
+        else{
+            const filteredBookItems = originalBookItems.filter((bookItem) => minuteList.includes(bookItem.serviceMinute.toString()))
+            setBookItems(filteredBookItems)
+        }
+        setIsFilterModalOpen(false)
     }
     
     return (

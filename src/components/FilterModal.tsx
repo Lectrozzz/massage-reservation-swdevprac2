@@ -6,7 +6,7 @@ type Props = {
     isOpen: boolean;
     text: string;
     onClose: () => void;
-    handler: () => void;
+    handler: (minuteList: string[]) => void;
 }
 
 const FilterModal = ({ isOpen, text, onClose, handler }: Props) => {
@@ -17,26 +17,26 @@ const FilterModal = ({ isOpen, text, onClose, handler }: Props) => {
     const {
       target: { value },
     } = event;
-    let temp = []
-    if (typeof value !== 'string'){
-     temp = value
-    } else {
-        temp = value.split(',')
+    // if default is selected, set remove all element from minuteList except default and  if default in minuteList, include value to minutelist except default
+    let nextState: string[] = []
+    if (typeof value === 'string'){
+      nextState = value.split(',')
     }
-    if (minuteList.includes("Default")){
-        temp.filter((item)=>{
-            return (item !== "Default")
-        })
+    else{
+      nextState = value
     }
-        
-    if (temp.includes("Default")){
+
+    if (nextState.includes("Default")){
+      if (minuteList.includes("Default")){
+        setMinuteList(nextState.filter((item) => item !== "Default"))
+      }
+      else{
         setMinuteList(["Default"])
-        return
+      }
     }
-    setMinuteList(
-      // On autofill we get a stringified value.
-      temp
-    );
+    else{
+      setMinuteList(nextState)
+    }
   };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -64,7 +64,7 @@ const FilterModal = ({ isOpen, text, onClose, handler }: Props) => {
         </div>
         <div className="flex wifull justify-center gap-2">
             <Button className='bg-red-500 hover:bg-red-400 text-white' onClick={onClose}>Close</Button>
-            <Button className='bg-green-500 hover:bg-green-400 text-white' onClick={handler}>Confirm</Button>
+            <Button className='bg-green-500 hover:bg-green-400 text-white' onClick={()=>{ handler(minuteList)} }>Confirm</Button>
         </div>
       </div>
     </div>
