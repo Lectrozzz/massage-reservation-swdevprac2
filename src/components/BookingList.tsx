@@ -5,6 +5,7 @@ import dayjs from "dayjs"
 import getBookings from "@/libs/bookings/getBookings"
 import { Button, Checkbox, FormControl,InputLabel,ListItemText,ListSubheader,MenuItem, OutlinedInput, Select, SelectChangeEvent } from "@mui/material"
 import { BookingItem} from "../../interfaces"
+import FilterModal from "./FilterModal"
 
 export default function BookingList() {
     const [bookItems, setBookItems] = useState<BookingItem[]>([])
@@ -15,6 +16,7 @@ export default function BookingList() {
     const myID = user?.id
     const user_name = user?.name
     const minutes = ["60","90","120"]
+    const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false)
     
     const handleOption = (event: SelectChangeEvent<typeof minuteList>) => {
         const {
@@ -78,9 +80,13 @@ export default function BookingList() {
         }
         setSort(option)
     }
+    const filterBooking = () => {
+
+    }
     
     return (
         <div>
+            <FilterModal isOpen= {isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} handler={filterBooking} text={"Select your filter"} />
             <div className="text-center text-4xl m-5 font-semibold drop-shadow">Reservations</div>
             <div className="flex w-full justify-end p-5">
             <FormControl>
@@ -100,7 +106,11 @@ export default function BookingList() {
                                 <MenuItem value={"descendingService"}>Service Duration, descending</MenuItem>
                             </Select>
                         </FormControl>
-                        <button variant="outlined">Filter Modal</button>
+                        <Button className='bg-gradient-to-r from-[#71aa48] to-[#314a25] text-white border font-extralight
+            hover:font-semibold py-2 px-2 m-2 rounded hover:to-[#bcdd15] self-end w-[10%]'
+            onClick={()=>{setIsFilterModalOpen(true)}} style={{textShadow: "1px 1px 1px black"}}>
+                Filter Options
+            </Button>
             </div>
                 <div className="">
                 {
