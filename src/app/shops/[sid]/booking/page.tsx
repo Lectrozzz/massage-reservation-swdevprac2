@@ -11,6 +11,7 @@ import 'dayjs/locale/en-gb'
 import createBooking from "@/libs/bookings/createBooking";
 import Modal from "@/components/Modal";
 import ErrorModal from "@/components/ErrorModal";
+import { validateBookingDate, validateServiceMinute } from "../../../../../AuthFormValidation";
 
 const createBookingPage = () => {
     const params = useParams<{sid: string}>()
@@ -20,13 +21,18 @@ const createBookingPage = () => {
     const shopId = params.sid;
     const userId = user?.id;
     const [serviceMinute,setServiceMinute] = useState<number>(60)
-    const [bookingDate, setBookingDate] = useState<string>(dayjs().toISOString().split('T')[0])
+    const [bookingDate, setBookingDate] = useState<string>(dayjs().add(1,'day').toISOString().split('T')[0])
     const [showError, setShowError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
+
     const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false)
+    const [isDateError, setIsDateError] = useState<boolean> (false)
+    const [isServiceMinuteError, setIsServiceMinuteError] = useState<boolean>(false)
 
     const createBookingHandler = async () => {
         if(!token) return
+        if (validateBookingDate(bookingDate) !== '') return
+        if (!checkValidBooking()) return
         const bookData = {
             bookingDate: bookingDate,
             serviceMinute: serviceMinute,
@@ -43,16 +49,31 @@ const createBookingPage = () => {
         }
         router.push(`/mybooking`)
     }
-    // TODO: Implement the create booking form here. Goodluck :D
+
+    const checkValidBooking = async () => {
+        if (validateBookingDate(bookingDate) !== '') return false
+        console.log(serviceMinute)
+        console.log(validateServiceMinute(serviceMinute))
+        if (validateServiceMinute(serviceMinute) !== '') return
+        
+        setIsServiceMinuteError(false)
+        setIsDateError(false)
+        return true
+    }
     return (
         <main className="w-[80%] flex flex-col mx-auto items-center">
             <h1 className="text-black font-semibold text-2xl mt-8">Create Booking</h1>
             <FormControl className = "w-2/5 bg-white rounded-lg space-y-2 m-5 p-4">
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
-                <DateField variant="standard" name="Date" label="Date" defaultValue ={dayjs()} onChange={(newValue)=>{
-                    if (newValue) setBookingDate(newValue.toISOString().split('T')[0])}
-                    
-                     }/>
+                <DateField variant="standard" name="Date" label="Date" defaultValue ={dayjs(bookingDate)} minDate={dayjs().add(1,'day')} onChange={(newValue, context)=>{
+                    if (newValue && context.validationError === null) {
+                        setBookingDate(newValue.toISOString().split('T')[0]); 
+                        setIsDateError(false)
+                        return
+                    }
+                    setIsDateError(true)
+                    }
+                    } />
                 </LocalizationProvider>
                 <FormControl className="text-left">
                     <InputLabel variant="standard">Session Duration:</InputLabel>
@@ -66,7 +87,7 @@ const createBookingPage = () => {
                             {showError ? <ErrorModal isOpen={showError} onClose={()=>setShowError(false)} text={errorMessage}/> : null}
                         </div>
                 <div className="justify-end flex">
-                    <Button className="bg-sky-500 text-white" onClick={()=>setIsCreateModalOpen(true)}>Create Booking</Button>
+                    <Button className="bg-sky-500 text-white" disabled ={isDateError} onClick={()=>setIsCreateModalOpen(true)}>Create Booking</Button>
                     <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} 
                     handler={createBookingHandler} text={"Are you sure that you want to create booking with this information?"} />
                 </div>

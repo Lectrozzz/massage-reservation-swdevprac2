@@ -7,24 +7,27 @@ import { BookingItem } from "../../../../interfaces";
 import { useRouter } from "next/navigation";
 import { FormControl, Select, TextField, Button, InputLabel, MenuItem, SelectChangeEvent, CircularProgress } from "@mui/material";
 import { DateField } from "@mui/x-date-pickers/DateField";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { ArrowDropDownIcon, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import removeBookingByID from "@/libs/bookings/removeBookingByID";
 import updateBookingByID from "@/libs/bookings/updateBookingByID";
 import Modal from '@/components/Modal'
 import 'dayjs/locale/en-gb'
+import { validateBookingDate, validateServiceMinute } from "../../../../AuthFormValidation";
 
 export default function BookingDetail( {params}: {params : {bid:string}}){
 
     const [bookingInfo, setBookingInfo] = useState<BookingItem>()
-    const [editable, setEditable] = useState(false)
-    const [serviceMinute,setServiceMinute] = useState(60)
+    const [serviceMinute,setServiceMinute] = useState<number>(60)
     const [bookingDate,setBookingDate] = useState<string>('')
-    const [dayJSdate, setDayJSDate] = useState<Dayjs>()
     const {user,token} = useUserStore()
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false)
+    const [editable, setEditable] = useState<boolean>(false)
+    const [validChange, setValidChange] = useState<boolean>(false)
+    const [isDateError, setIsDateError] = useState<boolean>(false)
+    const [isServiceMinuteError, setIsServiceMinuteError] = useState<boolean>(false)
 
     const removeBooking = async() => {
         if (!token) return
@@ -42,7 +45,9 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
         if (!token) return
         const bookingDetail = await getBookingByID(token,params.bid)
         setBookingInfo(bookingDetail)
-        setBookingDate(bookingDetail.bookingDate)
+        setBookingDate(bookingDetail.bookingDate.split('T')[0])
+        console.log(validateBookingDate(bookingDate))
+        if(validateBookingDate(bookingDate) !== '') setIsDateError(true)
         setServiceMinute(bookingDetail.serviceMinute)
     }
     const updateBookingDetail = async () => {
@@ -61,18 +66,40 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
             setIsSaveModalOpen(false)
         }
     }
+    const checkValidChange = async () => {
+        if (validateBookingDate(bookingDate) !== '') return
+        console.log(serviceMinute)
+        console.log(validateServiceMinute(serviceMinute))
+        if (validateServiceMinute(serviceMinute) !== '') return
+        if ((bookingDate === bookingInfo?.bookingDate.split('T')[0]) 
+            && (serviceMinute === bookingInfo.serviceMinute)) {
+        setValidChange(false)
+        return
+        }
+        setIsServiceMinuteError(false)
+        setIsDateError(false)
+        setValidChange(true)
+    }
     const router = useRouter()
 
     useEffect(() =>{
         getBookingDetail()
         console.log(bookingInfo)
     },[token])
+
+    useEffect(() =>{
+        checkValidChange()
+    },[bookingDate,serviceMinute])
+
+
     if (!token)
         return (
             <main className="text-center p-5 ">
                 <div>No Authorization</div>
             </main>
         )
+
+    
     return (
         <main className="flex flex-col text-center p-5 justify-center items-center">
             <div className="text-3xl font-semibold mb-5 drop-shadow-md">Booking Info</div>
@@ -86,18 +113,26 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
                 {/* <div className="flex w-full"> */}
                     {/* <CircularProgress className="absolute right-0"/> */}
-                <DateField className={"w-full " + editable? '':'pointer-events-none'} variant="standard" name="Date" label="Date" defaultValue ={dayjs(bookingDate)} value={dayJSdate} onChange={(newValue)=>
-                    {if (newValue) 
-                    {
-                        setBookingDate(newValue.toISOString());
-                        setDayJSDate(newValue)
-                    }
-                     console.log(newValue?.toISOString())}}/>
+                <DateField className={editable? '':'pointer-events-none'} focused={editable} variant="standard" name="Date" label="Date" 
+                defaultValue ={dayjs(bookingDate)} minDate={dayjs().add(1,'day')} 
+                onChange={(newValue, context)=>{
+                        if (newValue && context.validationError === null) {
+                            setIsDateError(false)
+                            setBookingDate(newValue.toISOString().split('T')[0]); 
+                            console.log(validChange)
+                            return
+                        }
+                        setIsDateError(true)
+                        }
+                    } />
                 {/* </div> */}
                 </LocalizationProvider>
                 <FormControl className="text-left">
                     <InputLabel variant="standard">Session Duration:</InputLabel>
-                    <Select variant="standard" className={editable? '':'pointer-events-none'} value = {serviceMinute.toString()} onChange={(e: SelectChangeEvent)=>{setServiceMinute(parseInt(e.target.value)); console.log(serviceMinute)}}>
+                    <Select variant="standard" className={editable? '':'pointer-events-none'} IconComponent={editable? ArrowDropDownIcon:()=>null} value = {serviceMinute.toString()} onChange={(e: SelectChangeEvent)=>{
+                        setServiceMinute(parseInt(e.target.value))
+                        checkValidChange()
+                        }}>
                         <MenuItem value="60">60 minutes</MenuItem>
                         <MenuItem value="90">90 minutes</MenuItem>
                         <MenuItem value="120">120 minutes</MenuItem> 
@@ -107,7 +142,7 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
                     <Button onClick={()=>setIsDeleteModalOpen(true)} className="bg-red-500 text-white">Delete</Button>
                     <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} handler={removeBooking} text={"Are you sure that you want to delete this booking?"} />
                     <Button onClick={()=>setEditable(!editable)} className="bg-sky-500 text-white">{editable ? "Editing":"Edit"}</Button>
-                    <Button disabled={!editable} onClick={()=>setIsSaveModalOpen(true)} className="bg-green-300">Save</Button>
+                    <Button disabled={!editable || isDateError || isServiceMinuteError ||!validChange} onClick={()=>setIsSaveModalOpen(true)} className="bg-green-300">Save</Button>
                     <Modal isOpen={isSaveModalOpen} onClose={() => setIsSaveModalOpen(false)} handler={updateBookingDetail} text={"Are you sure that you want to make changes to this booking?"} />
                     </div>
             </FormControl>

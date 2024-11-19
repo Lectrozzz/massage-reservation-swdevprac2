@@ -22,11 +22,6 @@ export default function Banner () {
                     <h3 className='text-xl font-extralight drop-shadow-lg'>Relax. Take a Massage</h3>
                 </div>
             </div>
-            <button className='bg-gradient-to-r from-[#71aa48] to-[#314a25] text-white border 
-            font-semibold py-2 px-2 m-2 rounded z-30 absolute bottom-0 right-5 hover:to-[#bcdd15]'
-            onClick={(e)=>{e.stopPropagation(); router.push('/shops')}} style={{textShadow: "1px 1px 1px black"}}>
-                Have a look
-            </button>
         </div>
     );
 }
