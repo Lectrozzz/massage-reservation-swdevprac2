@@ -2,7 +2,7 @@
 
 import useShopList from "@/hooks/useShopList";
 import getShops from "@/libs/shops/getShops";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from 'next/image'
 import Link from "next/link";
 import { Select,MenuItem,TextField,FormControl,InputLabel, SelectChangeEvent, Button} from "@mui/material"
@@ -38,9 +38,11 @@ const shopItem = (shop: any) => {
 }
 
 const shopsPage = () => {
+    const [shopMainData, setShopMainData ] = useState<any>([])
     const { shops, setShops } = useShopList()
     const {user} = useUserStore()
     const router = useRouter()
+    const [sort, setSort] = useState<string>("none")
 
     const createShopHandler = () => {
         console.log("Create shop")
@@ -62,6 +64,25 @@ const shopsPage = () => {
             }
         })
         setShops(shops)
+        setShopMainData(shops)
+    }
+
+    const sortShops = (option: string) => {
+        if (shopMainData.length === 0){
+            setShopMainData([])
+        }
+        else if(option === "none"){
+            setShopMainData(shops)
+        }
+        else if(option === "ascending"){
+            const sortedShops = shopMainData.sort((a: any, b: any) => a.priceLevel - b.priceLevel)
+            setShopMainData(sortedShops)
+        }
+        else if(option === "descending"){
+            const sortedShops = shopMainData.sort((a: any, b: any) => b.priceLevel - a.priceLevel)
+            setShopMainData(sortedShops)
+        }
+        setSort(option)
     }
 
     useEffect(() => {
@@ -76,20 +97,34 @@ const shopsPage = () => {
                 <div className="text-lg font-medium drop-shadow-sm">
                     Total Shops: {shops.length}
                 </div>
-                <div>
+                <div className="flex flex-row gap-2 items-center">
+                    <FormControl>
+                        <Select
+                            labelId="sort"
+                            id="sort"
+                            value={sort}
+                            variant="standard"
+                            label="Sort"
+                            onChange={(e: SelectChangeEvent) => {sortShops(e.target.value)}}
+                        >
+                            <MenuItem value={"none"}>Order by: None</MenuItem>
+                            <MenuItem value={"ascending"}>Price level, Ascending</MenuItem>
+                            <MenuItem value={"descending"}>Price level, Descending</MenuItem>
+                        </Select>
+                    </FormControl>
                     {
-                        user?.role === "admin" ? <button className='bg-gradient-to-r from-[#71aa48] to-[#314a25] text-white border 
-                        font-semibold py-2 px-4 m-2 rounded hover:to-[#bcdd15]'
-                        onClick={createShopHandler}>
-                            Create
-                        </button> : null
+                    user?.role === "admin" ? <button className='bg-gradient-to-r from-[#71aa48] to-[#314a25] text-white border 
+                    font-semibold py-2 px-4 m-2 rounded hover:to-[#bcdd15]'
+                    onClick={createShopHandler}>
+                        Create
+                    </button> : null
                     }
                 </div>
             </div>
-            { shops.length === 0 ? 
+            { shopMainData.length === 0 ? 
                 <div className="text-center text-2xl text-black m-5 font-thin">No Shop Available</div> :
                 <div className="grid grid-cols-3 gap-3 w-full mt-4 px-5">
-                    {shops.map((shop) => shopItem(shop))}
+                    {shopMainData.map((shop: any) => shopItem(shop))}
                 </div>
             }
         </main>
