@@ -21,6 +21,7 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
     const [serviceMinute,setServiceMinute] = useState<number>(60)
     const [bookingDate,setBookingDate] = useState<string>('')
     const {user,token} = useUserStore()
+    const lowestBookingDate = dayjs().add(1,'day')
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false)
@@ -66,7 +67,8 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
             setIsSaveModalOpen(false)
         }
     }
-    const checkValidChange = async () => {
+    const checkValidChange = () => {
+        console.log(bookingDate)
         if (validateBookingDate(bookingDate) !== '') return
         console.log(serviceMinute)
         console.log(validateServiceMinute(serviceMinute))
@@ -114,11 +116,11 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
                 {/* <div className="flex w-full"> */}
                     {/* <CircularProgress className="absolute right-0"/> */}
                 <DateField className={editable? '':'pointer-events-none'} focused={editable} variant="standard" name="Date" label="Date" 
-                defaultValue ={dayjs(bookingDate)} minDate={dayjs().add(1,'day')} 
+                defaultValue ={dayjs(bookingDate)} minDate={lowestBookingDate} 
                 onChange={(newValue, context)=>{
                         if (newValue && context.validationError === null) {
                             setIsDateError(false)
-                            setBookingDate(newValue.toISOString().split('T')[0]); 
+                            setBookingDate(newValue.add(1,'day').toISOString().split('T')[0]); 
                             console.log(validChange)
                             return
                         }
@@ -140,16 +142,17 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
                 </FormControl>
                 <div className="flex flex-row justify-end space-x-1">
                     <Button onClick={()=>setIsDeleteModalOpen(true)} className="bg-red-500 text-white">Delete</Button>
-                    <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} handler={removeBooking} text={"Are you sure that you want to delete this booking?"} />
                     <Button onClick={()=>setEditable(!editable)} className="bg-sky-500 text-white">{editable ? "Editing":"Edit"}</Button>
                     <Button disabled={!editable || isDateError || isServiceMinuteError ||!validChange} onClick={()=>setIsSaveModalOpen(true)} className="bg-green-300">Save</Button>
-                    <Modal isOpen={isSaveModalOpen} onClose={() => setIsSaveModalOpen(false)} handler={updateBookingDetail} text={"Are you sure that you want to make changes to this booking?"} />
+                    
                     </div>
             </FormControl>
 
 
         </div>
         :<div>Sorry, there is currently no booking information available for this ID.</div>}
+        <Modal isOpen={isSaveModalOpen} onClose={() => setIsSaveModalOpen(false)} handler={updateBookingDetail} text={"Are you sure that you want to make changes to this booking?"} />
+        <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} handler={removeBooking} text={"Are you sure that you want to delete this booking?"} />
         </main>
     )
 }

@@ -5,7 +5,7 @@ import getShops from "@/libs/shops/getShops";
 import { useEffect, useState } from "react";
 import Image from 'next/image'
 import Link from "next/link";
-import { Select,MenuItem,TextField,FormControl,InputLabel, SelectChangeEvent, Button} from "@mui/material"
+import { Select,MenuItem,FormControl,SelectChangeEvent} from "@mui/material"
 import { useRouter } from "next/navigation";
 import useUserStore from "@/hooks/useUser";
 
@@ -39,6 +39,7 @@ const shopItem = (shop: any) => {
 
 const shopsPage = () => {
     const [shopMainData, setShopMainData ] = useState<any>([])
+    const [originalShopMainData, setOriginalShopMainData ] = useState<any>([])
     const { shops, setShops } = useShopList()
     const {user} = useUserStore()
     const router = useRouter()
@@ -65,6 +66,7 @@ const shopsPage = () => {
         })
         setShops(shops)
         setShopMainData(shops)
+        setOriginalShopMainData(shops)
     }
 
     const sortShops = (option: string) => {
@@ -72,7 +74,7 @@ const shopsPage = () => {
             setShopMainData([])
         }
         else if(option === "none"){
-            setShopMainData(shops)
+            setShopMainData(originalShopMainData)
         }
         else if(option === "ascending"){
             const sortedShops = shopMainData.sort((a: any, b: any) => a.priceLevel - b.priceLevel)

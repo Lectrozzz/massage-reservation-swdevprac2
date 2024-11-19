@@ -17,6 +17,7 @@ const createBookingPage = () => {
     const params = useParams<{sid: string}>()
     const { user, token } = useUserStore();
     const router = useRouter()
+    const lowestBookingDate = dayjs().add(1,'day')
 
     const shopId = params.sid;
     const userId = user?.id;
@@ -71,9 +72,9 @@ const createBookingPage = () => {
             <div className="text-center text-4xl m-5 font-semibold drop-shadow">Create Booking</div>
             <FormControl className = "w-2/5 bg-gradient-to-br from-[#a2ab45] to-[#D3D989] rounded-lg space-y-2 m-5 p-4">
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
-                <DateField variant="standard" name="Date" label="Date" defaultValue ={dayjs(bookingDate)} minDate={dayjs().add(1,'day')} onChange={(newValue, context)=>{
+                <DateField variant="standard" name="Date" label="Date" defaultValue ={dayjs(bookingDate)} minDate={lowestBookingDate} onChange={(newValue, context)=>{
                     if (newValue && context.validationError === null) {
-                        setBookingDate(newValue.toISOString().split('T')[0]); 
+                        setBookingDate(newValue.add(1,'day').toISOString().split('T')[0]); 
                         setIsDateError(false)
                         return
                     }
@@ -93,7 +94,7 @@ const createBookingPage = () => {
                             {showError ? <ErrorModal isOpen={showError} onClose={()=>setShowError(false)} text={errorMessage}/> : null}
                         </div>
                 <div className="justify-end flex">
-                    <Button className="bg-sky-500 text-white" disabled ={isDateError} onClick={()=>setIsCreateModalOpen(true)}>Create Booking</Button>
+                    <Button className="bg-sky-500 text-white" disabled ={isDateError} onClick={()=>{setIsCreateModalOpen(true); console.log(bookingDate)}}>Create Booking</Button>
                     <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} 
                     handler={createBookingHandler} text={"Are you sure that you want to create booking with this information?"} />
                 </div>
