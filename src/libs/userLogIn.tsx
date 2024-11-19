@@ -11,10 +11,6 @@ export default async function userLogIn(loginData: Login) {
         },
         body: JSON.stringify(loginData),
     })
-    if(!response.ok){
-        console.log(response)
-        throw new Error("Failed to log-in")
-    }
     const data = await response.json()
     console.log(data)
     return data

@@ -10,6 +10,7 @@ import deleteShop from '@/libs/shops/deleteShop'
 import Modal from '@/components/Modal'
 import useUserStore from '@/hooks/useUser'
 import updateShop from '@/libs/shops/updateShop'
+import { ArrowDropDownIcon } from "@mui/x-date-pickers";
 
 const shopDetailPage = () => {
 
@@ -106,7 +107,7 @@ const shopDetailPage = () => {
     return (
         <main className="w-[80%] flex flex-col mx-auto items-center">
             <h1 className="text-black font-semibold text-2xl mt-8">{shopHeaderName}</h1>
-            <div className="w-[75%] flex flex-row items-center gap-8 bg-white p-8 rounded-lg mt-8">
+            <div className="w-[75%] flex flex-row items-center gap-8 bg-gradient-to-br from-[#a2ab45] to-[#D3D989] p-8 rounded-lg mt-8">
                 <div className='w-full'>
                     <Image
                     src={pictureUrl}
@@ -118,22 +119,22 @@ const shopDetailPage = () => {
                 </div>
                 <div className='w-full'>
                     <div className='w-full relative pb-4'>
-                        <FormControl className="w-full flex space-y-3 flex-col">
-                            <TextField disabled={!isEditable} variant="standard" name="Name" label="Name" value={shopName} onChange={(e)=>{setShopName(e.target.value)}}/>
-                            <TextField disabled={!isEditable} variant="standard" name="Address" label="Address" value={shopAddress} onChange={(e)=>{setShopAddress(e.target.value)}}/>
+                        <FormControl className="w-full flex space-y-4 flex-col">
+                            <TextField className={(!isEditable)?'pointer-events-none': ''} variant="standard" name="Name" label="Name" value={shopName} onChange={(e)=>{setShopName(e.target.value)}}/>
+                            <TextField className={(!isEditable)?'pointer-events-none': ''} variant="standard" name="Address" label="Address" value={shopAddress} onChange={(e)=>{setShopAddress(e.target.value)}}/>
                             <FormControl>
                                 <InputLabel className="-left-[14px]">Price Level</InputLabel>
-                                <Select disabled={!isEditable} variant="standard" id="hospital" label="Hospital" value={priceLevel.toString()} required onChange={(e: SelectChangeEvent)=>{setPriceLevel(Number(e.target.value))}}>
+                                <Select className={(!isEditable)?'pointer-events-none': ''} IconComponent={isEditable? ArrowDropDownIcon:()=>null} variant="standard" id="hospital" label="Hospital" value={priceLevel.toString()} required onChange={(e: SelectChangeEvent)=>{setPriceLevel(Number(e.target.value))}}>
                                     <MenuItem value="1">1</MenuItem>
                                     <MenuItem value="2">2</MenuItem>
                                     <MenuItem value="3">3</MenuItem>
                                     <MenuItem value="4">4</MenuItem>
                                 </Select>
                             </FormControl>
-                            <TextField disabled={!isEditable} variant="standard" name="Province" label="Province" value={province} onChange={(e)=>{setProvince(e.target.value)}}/>
-                            <TextField disabled={!isEditable} variant="standard" name="Postalcode" label="Postalcode" value={postalcode} onChange={(e)=>{setPostalcode(e.target.value)}}/>
-                            <TextField disabled={!isEditable} variant="standard" name="Tel" label="Tel" value={tel} onChange={(e)=>{setTel(e.target.value)}}/>
-                            <TextField disabled={!isEditable} variant="standard" name="Picture" label="Picture" value={newPictureUrl} onChange={(e)=>{setNewPictureUrl(e.target.value)}}/>
+                            <TextField className={(!isEditable)?'pointer-events-none': ''} variant="standard" name="Province" label="Province" value={province} onChange={(e)=>{setProvince(e.target.value)}}/>
+                            <TextField className={(!isEditable)?'pointer-events-none': ''} variant="standard" name="Postalcode" label="Postalcode" value={postalcode} onChange={(e)=>{setPostalcode(e.target.value)}}/>
+                            <TextField className={(!isEditable)?'pointer-events-none': ''} variant="standard" name="Tel" label="Tel" value={tel} onChange={(e)=>{setTel(e.target.value)}}/>
+                            <TextField className={(!isEditable)?'pointer-events-none': ''} variant="standard" name="Picture" label="Picture" value={newPictureUrl} onChange={(e)=>{setNewPictureUrl(e.target.value)}}/>
                         </FormControl>
                         <div className='absolute right-0'>
                             {showError ? <p className="text-red-500 text-sm my-2">{errorMessage}</p> : null}

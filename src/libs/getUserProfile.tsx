@@ -5,9 +5,6 @@ export default async function getUserProfile(token:string){
             "Authorization":`Bearer ${token}`,
         }
         })
-    if(!response.ok) {
-        throw new Error("Cannot get user profile")
-    }
     const data = await response.json()
     console.log("user data", data.data)
     return data.data

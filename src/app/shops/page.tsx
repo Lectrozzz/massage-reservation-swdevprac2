@@ -15,7 +15,7 @@ const shopItem = (shop: any) => {
     const pictureUrl = (regex.test(shop.picture)) ? shop.picture : '/img/default_shop.jpg'
     console.log("picture url",pictureUrl)
     return (
-        <div key={shop.id} className="bg-[#eba244] rounded-lg w-full px-5 py-5 flex flex-auto flex-col justify-center mx-auto">
+        <div key={shop.id} className="bg-gradient-to-br from-[#a2ab45] to-[#D3D989] rounded-lg w-full px-5 py-5 flex flex-auto flex-col justify-center mx-auto">
             <div>
                 <Link href={`/shops/${shop.id}`}>
                     <Image
@@ -27,10 +27,10 @@ const shopItem = (shop: any) => {
                 </Link>
             </div>
             <div className="w-full flex justify-start mt-2">
-                <div className="text-black">
-                    <Link href={`/shops/${shop.id}`}className="text-xl font-semibold text-br hover:text-gray-700">{shop.name}</Link>
-                    <div>Level: {shop.priceLevel}</div>
-                    <div>{shop.tel}</div>
+                <div className="">
+                    <Link href={`/shops/${shop.id}`}className="text-xl font-semibold text-br hover:text-gray-100">{shop.name}</Link>
+                    <div>Price Level: {shop.priceLevel}</div>
+                    <div>Tel: {shop.tel}</div>
                 </div>
             </div>
         </div>
@@ -70,21 +70,28 @@ const shopsPage = () => {
 
     return (
         <main className="w-[50%] flex flex-col mx-auto items-center mt-4">
-            <h1 className="text-black font-semibold text-2xl mt-4">Shops</h1>
-            <div className="text-black my-4">You can find various massage shops here.</div>
+            <div className="text-center text-4xl m-5 font-semibold drop-shadow">Shops</div>
+            <div className= "my-3 text-lg">You can find various massage shops here.</div>
             <div className="flex w-full justify-between mt-4 items-center">
-                <div className="text-black text-lg font-medium">
+                <div className="text-lg font-medium drop-shadow-sm">
                     Total Shops: {shops.length}
                 </div>
                 <div>
                     {
-                        user?.role === "admin" ? <Button variant="contained" color="primary" onClick={createShopHandler}>Create</Button> : null
+                        user?.role === "admin" ? <button className='bg-gradient-to-r from-[#71aa48] to-[#314a25] text-white border 
+                        font-semibold py-2 px-4 m-2 rounded hover:to-[#bcdd15]'
+                        onClick={createShopHandler}>
+                            Create
+                        </button> : null
                     }
                 </div>
             </div>
-            <div className="grid grid-cols-3 gap-3 w-full mt-4 px-5">
-                {shops.map((shop) => shopItem(shop))}
-            </div>
+            { shops.length === 0 ? 
+                <div className="text-center text-2xl text-black m-5 font-thin">No Shop Available</div> :
+                <div className="grid grid-cols-3 gap-3 w-full mt-4 px-5">
+                    {shops.map((shop) => shopItem(shop))}
+                </div>
+            }
         </main>
     );
 }

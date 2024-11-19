@@ -60,10 +60,16 @@ const createBookingPage = () => {
         setIsDateError(false)
         return true
     }
+
+    if (!user) {
+        router.push('/login')
+        return null
+    }
+
     return (
         <main className="w-[80%] flex flex-col mx-auto items-center">
-            <h1 className="text-black font-semibold text-2xl mt-8">Create Booking</h1>
-            <FormControl className = "w-2/5 bg-white rounded-lg space-y-2 m-5 p-4">
+            <div className="text-center text-4xl m-5 font-semibold drop-shadow">Create Booking</div>
+            <FormControl className = "w-2/5 bg-gradient-to-br from-[#a2ab45] to-[#D3D989] rounded-lg space-y-2 m-5 p-4">
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
                 <DateField variant="standard" name="Date" label="Date" defaultValue ={dayjs(bookingDate)} minDate={dayjs().add(1,'day')} onChange={(newValue, context)=>{
                     if (newValue && context.validationError === null) {

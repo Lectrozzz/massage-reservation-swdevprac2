@@ -23,10 +23,6 @@ export default async function createShop({shopData, token}: param) {
         },
         body: JSON.stringify(shopData),
     })
-    if(!response.ok){
-        console.log(response)
-        throw new Error("Failed to update shop")
-    }
     const data = await response.json()
     return data
 }
