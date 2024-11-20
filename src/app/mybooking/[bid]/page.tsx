@@ -15,6 +15,7 @@ import Modal from '@/components/Modal'
 import 'dayjs/locale/en-gb'
 import { validateBookingDate, validateServiceMinute } from "../../../../AuthFormValidation";
 
+
 export default function BookingDetail( {params}: {params : {bid:string}}){
 
     const [bookingInfo, setBookingInfo] = useState<BookingItem>()
@@ -22,6 +23,8 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
     const [bookingDate,setBookingDate] = useState<string>('')
     const {user,token} = useUserStore()
     const lowestBookingDate = dayjs().add(1,'day')
+    const [reason, setReason] = useState<string>("You have no access to said Booking ID.")
+    
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false)
@@ -45,10 +48,12 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
     }
     const getBookingDetail = async () => {
         if (!token){
+            setReason("You have no access to said Booking ID.")
             setIsLoading(false)
             return
         }
-        const bookingDetail = await getBookingByID(token,params.bid)
+        setIsLoading(true)
+        const bookingDetail = await getBookingByID(token,params.bid)    
         setBookingInfo(bookingDetail)
         setBookingDate(bookingDetail.bookingDate.split('T')[0])
         console.log(validateBookingDate(bookingDate))
@@ -72,6 +77,7 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
             setIsSaveModalOpen(false)
         }
     }
+      
     const checkValidChange = () => {
         console.log(bookingDate)
         if (validateBookingDate(bookingDate) !== '') return
@@ -87,24 +93,22 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
         setIsDateError(false)
         setValidChange(true)
     }
+    const checkValidRetrieve = () => {
+        if (!bookingInfo && token)
+            setReason("Sorry, no information available")
+    }
     const router = useRouter()
 
-    useEffect(() =>{
+    useEffect(()=> {
         getBookingDetail()
-        console.log(bookingInfo)
     },[token])
-
+   
     useEffect(() =>{
         checkValidChange()
     },[bookingDate,serviceMinute])
-
-
-    if (!token && !isLoading)
-        return (
-            <main className="text-center p-5 ">
-                <div>No Authorization</div>
-            </main>
-        )
+    useEffect(() =>{
+        if(!isLoading && token) checkValidChange()
+    },[isLoading])
 
     
     return (
@@ -155,7 +159,9 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
 
 
         </div>
-        :<div>{isLoading ? "Loading..." :"Sorry, there is currently no booking information available for this ID."}</div>}
+        :<div>{isLoading ? "Loading..." :`${reason}`}
+        
+        </div>}
         <Modal isOpen={isSaveModalOpen} onClose={() => setIsSaveModalOpen(false)} handler={updateBookingDetail} text={"Are you sure that you want to make changes to this booking?"} />
         <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} handler={removeBooking} text={"Are you sure that you want to delete this booking?"} />
         </main>
