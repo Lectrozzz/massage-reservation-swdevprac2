@@ -128,7 +128,7 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
 
             <FormControl className="text-white w-auto space-y-2">
                 <div className="text-2xl font-bold pb-5 d">{bookingInfo.shop.name}</div>
-                <TextField variant="standard" className="text-sm pointer-events-none" name="Name" label="Name" value={user?.name}/>
+                <TextField variant="standard" className="text-sm pointer-events-none" name="User ID" label="User ID" value={bookingInfo.user}/>
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
                 {/* <div className="flex w-full"> */}
                     {/* <CircularProgress className="absolute right-0"/> */}
