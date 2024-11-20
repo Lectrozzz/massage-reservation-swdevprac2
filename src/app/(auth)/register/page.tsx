@@ -83,7 +83,7 @@ const RegisterPage = () => {
                         <div className="w-full relative pb-6">
                             <InputLabel className="-left-[14px]">Role</InputLabel>
                             <Select className="w-full" variant="standard" id="hospital" label="Hospital" value={role} required onChange={(e: SelectChangeEvent)=>{setRole(e.target.value)}}>
-                                <MenuItem value="admin">Admin</MenuItem>
+                                {/* <MenuItem value="admin">Admin</MenuItem> */}
                                 <MenuItem value="user">User</MenuItem>
                             </Select>
                             <div className="text-red-500 text-sm font-normal absolute bottom-0 left-auto right-auto">{roleErrorText}</div>

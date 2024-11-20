@@ -31,7 +31,10 @@ const createBookingPage = () => {
     const [isServiceMinuteError, setIsServiceMinuteError] = useState<boolean>(false)
 
     const createBookingHandler = async () => {
-        if(!token) return
+        if(!token){
+            router.push('/login')
+            return
+        }
         if (validateBookingDate(bookingDate) !== '') return
         if (!checkValidBooking()) return
         const bookData = {
@@ -61,11 +64,6 @@ const createBookingPage = () => {
         return true
     }
 
-    if (!user) {
-        router.push('/login')
-        return null
-    }
-
     return (
         <main className="w-[80%] flex flex-col mx-auto items-center">
             <div className="text-center text-4xl m-5 font-semibold drop-shadow">Create Booking</div>
@@ -93,7 +91,11 @@ const createBookingPage = () => {
                             {showError ? <ErrorModal isOpen={showError} onClose={()=>setShowError(false)} text={errorMessage}/> : null}
                         </div>
                 <div className="justify-end flex">
-                    <Button className="bg-sky-500 text-white" disabled ={isDateError} onClick={()=>{setIsCreateModalOpen(true)}}>Create Booking</Button>
+                    <button className='bg-gradient-to-r from-[#71aa48] to-[#314a25] text-white 
+                        font-semibold py-2 px-4 rounded hover:to-[#bcdd15]' disabled ={isDateError} onClick={()=>{setIsCreateModalOpen(true)}}>
+                        CREATE BOOKING
+                    </button>
+                    {/* <Button className="bg-sky-500 text-white" disabled ={isDateError} onClick={()=>{setIsCreateModalOpen(true)}}>Create Booking</Button> */}
                     <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} 
                     handler={createBookingHandler} text={"Are you sure that you want to create booking with this information?"} />
                 </div>
