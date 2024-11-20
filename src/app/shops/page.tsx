@@ -30,7 +30,7 @@ const shopItem = (shop: any) => {
                 <div className="">
                     <Link href={`/shops/${shop.id}`}className="text-xl font-semibold text-br hover:text-gray-100">{shop.name}</Link>
                     <div>Price Level: {shop.priceLevel}</div>
-                    <div>Tel: {shop.tel}</div>
+                    <div>Tel: {shop.tel ? shop.tel: "-"}</div>
                 </div>
             </div>
         </div>
@@ -44,6 +44,7 @@ const shopsPage = () => {
     const {user} = useUserStore()
     const router = useRouter()
     const [sort, setSort] = useState<string>("none")
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const createShopHandler = () => {
         console.log("Create shop")
@@ -67,6 +68,7 @@ const shopsPage = () => {
         setShops(shops)
         setShopMainData(shops)
         setOriginalShopMainData(shops)
+        setIsLoading(false)
     }
 
     const sortShops = (option: string) => {
@@ -124,7 +126,7 @@ const shopsPage = () => {
                 </div>
             </div>
             { shopMainData.length === 0 ? 
-                <div className="text-center text-2xl text-black m-5 font-thin">No Shop Available</div> :
+                <div className="text-center text-2xl text-black m-5 font-thin">{ isLoading ? 'Loading...':'No Shop Available'}</div> :
                 <div className="grid grid-cols-3 gap-3 w-full mt-4 px-5">
                     {shopMainData.map((shop: any) => shopItem(shop))}
                 </div>

@@ -29,6 +29,7 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
     const [validChange, setValidChange] = useState<boolean>(false)
     const [isDateError, setIsDateError] = useState<boolean>(false)
     const [isServiceMinuteError, setIsServiceMinuteError] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const removeBooking = async() => {
         if (!token) return
@@ -43,13 +44,17 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
         return
     }
     const getBookingDetail = async () => {
-        if (!token) return
+        if (!token){
+            setIsLoading(false)
+            return
+        }
         const bookingDetail = await getBookingByID(token,params.bid)
         setBookingInfo(bookingDetail)
         setBookingDate(bookingDetail.bookingDate.split('T')[0])
         console.log(validateBookingDate(bookingDate))
         if(validateBookingDate(bookingDate) !== '') setIsDateError(true)
         setServiceMinute(bookingDetail.serviceMinute)
+        setIsLoading(false)
     }
     const updateBookingDetail = async () => {
         if (!token) return
@@ -94,7 +99,7 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
     },[bookingDate,serviceMinute])
 
 
-    if (!token)
+    if (!token && !isLoading)
         return (
             <main className="text-center p-5 ">
                 <div>No Authorization</div>
@@ -141,16 +146,16 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
                     </Select>
                 </FormControl>
                 <div className="flex flex-row justify-end space-x-1">
-                    <Button onClick={()=>setIsDeleteModalOpen(true)} className="bg-red-500 text-white">Delete</Button>
-                    <Button onClick={()=>setEditable(!editable)} className="bg-sky-500 text-white">{editable ? "Editing":"Edit"}</Button>
-                    <Button disabled={!editable || isDateError || isServiceMinuteError ||!validChange} onClick={()=>setIsSaveModalOpen(true)} className="bg-green-300">Save</Button>
+                    <Button onClick={()=>setIsDeleteModalOpen(true)} className="bg-red-500 text-white hover:bg-red-600">Delete</Button>
+                    <Button onClick={()=>setEditable(!editable)} className="bg-sky-500 text-white hover:bg-sky-600">{editable ? "Editing":"Edit"}</Button>
+                    <Button disabled={!editable || isDateError || isServiceMinuteError ||!validChange} onClick={()=>setIsSaveModalOpen(true)} className="bg-green-500 hover:bg-green-600 text-white">Save</Button>
                     
                     </div>
             </FormControl>
 
 
         </div>
-        :<div>Sorry, there is currently no booking information available for this ID.</div>}
+        :<div>{isLoading ? "Loading..." :"Sorry, there is currently no booking information available for this ID."}</div>}
         <Modal isOpen={isSaveModalOpen} onClose={() => setIsSaveModalOpen(false)} handler={updateBookingDetail} text={"Are you sure that you want to make changes to this booking?"} />
         <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} handler={removeBooking} text={"Are you sure that you want to delete this booking?"} />
         </main>

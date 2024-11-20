@@ -43,7 +43,7 @@ const FilterModal = ({ isOpen, text, onClose, handler }: Props) => {
       <div className="bg-white rounded-lg shadow-lg w-120 px-6 py-8">
         <div className="text-black w-full items-center mb-4">
             {text}
-            <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+            <InputLabel id="demo-multiple-checkbox-label">Service Minute</InputLabel>
         <Select
           className="w-[300px]"
           labelId="demo-multiple-checkbox-label"

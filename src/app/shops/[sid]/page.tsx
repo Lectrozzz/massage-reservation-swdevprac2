@@ -30,6 +30,7 @@ const shopDetailPage = () => {
 
     const [showError, setShowError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const {token, user} = useUserStore()
 
@@ -88,16 +89,23 @@ const shopDetailPage = () => {
     }
 
     const fetchData = async () => {
-        const shopData = await getShopById(params.sid)
-        setShopName(shopData.name)
-        setShopHeaderName(shopData.name)
-        setShopAddress(shopData.address)
-        setPriceLevel(shopData.priceLevel)
-        setProvince(shopData.province)
-        setPostalcode(shopData.postalcode)
-        setTel(shopData.tel)
-        setPicture(shopData.picture)
-        setNewPictureUrl(shopData.picture)
+        try{
+            const shopData = await getShopById(params.sid)
+            setShopName(shopData.name)
+            setShopHeaderName(shopData.name)
+            setShopAddress(shopData.address)
+            setPriceLevel(shopData.priceLevel)
+            setProvince(shopData.province)
+            setPostalcode(shopData.postalcode)
+            setTel(shopData.tel)
+            setPicture(shopData.picture)
+            setNewPictureUrl(shopData.picture)
+            setIsLoading(false)
+        }
+        catch(e){
+            console.error(e)
+            setIsLoading(false)
+        }
     }
 
     useEffect(() => {
@@ -106,7 +114,11 @@ const shopDetailPage = () => {
     
     return (
         <main className="w-[80%] flex flex-col mx-auto items-center">
-            <h1 className="text-black font-semibold text-2xl mt-8">{shopHeaderName}</h1>
+            { !shopHeaderName?
+            <h1 className="font-semibold text-2xl mt-8 drop-shadow "> { isLoading ? "Loading..." : "No shop data found"} </h1>
+            :
+            <>
+            <h1 className="font-semibold text-2xl mt-8 drop-shadow ">{shopHeaderName}</h1>
             <div className="w-[75%] flex flex-row items-center gap-8 bg-gradient-to-br from-[#a2ab45] to-[#D3D989] p-8 rounded-lg mt-8">
                 <div className='w-full'>
                     <Image
@@ -157,6 +169,8 @@ const shopDetailPage = () => {
                     </div>
                 </div>
             </div>
+            </>
+            }
         </main>
     );
 }

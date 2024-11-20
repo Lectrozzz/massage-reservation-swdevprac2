@@ -17,6 +17,7 @@ export default function BookingList() {
     const user_name = user?.name
     const minutes = ["60","90","120"]
     const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     
     const handleOption = (event: SelectChangeEvent<typeof minuteList>) => {
         const {
@@ -27,13 +28,16 @@ export default function BookingList() {
         )
     }
     const retrieveBookings = async () => { 
-        if (!token) 
+        if (!token){
             return
+        }
         const booking = await getBookings(token)
         console.log(booking)
         setOriginalBookItems(booking)
-        setBookItems(booking) 
-            }
+        setBookItems(booking)
+        setIsLoading(false)
+    }
+
     useEffect(() =>{
         retrieveBookings()
         console.log()
@@ -138,7 +142,7 @@ export default function BookingList() {
                                 <Button href={`/mybooking/${bookItem._id}`} className="text-sm text-white w-1/5 bg-[#668a40] hover:bg-[#416021]">Manage Booking</Button>
                         </div>
                     ))
-                :<div className="text-center text-4xl text-black m-5 font-thin">No Reservation</div>}
+                :<div className="text-center text-4xl text-black m-5 font-thin">{ isLoading ? "Loading...":"No Reservation"}</div>}
                 </div>
             </div>
     );
