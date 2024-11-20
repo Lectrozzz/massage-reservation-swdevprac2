@@ -100,34 +100,34 @@ export default function BookingList() {
     }
     
     return (
-        <div>
+        <div className="items-center">
             <FilterModal isOpen= {isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} handler={filterBooking} text={"Select your filter"} />
             <div className="text-center text-4xl m-5 font-semibold drop-shadow">Reservations</div>
-            <div className="flex w-full justify-end p-5">
+            <div className="flex w-3/4 justify-end gap-3 mx-auto px-3">
             <FormControl>
-                            <InputLabel>Sort</InputLabel>
-                            <Select
-                                labelId="sort"
-                                id="sort"
-                                value={sort}
-                                variant="outlined"
-                                label="Sort"
-                                onChange={(e: SelectChangeEvent) => {sortBookItems(e.target.value)}}
-                            >
-                                <MenuItem value={"none"}>Default Ordering</MenuItem>
-                                <MenuItem value={"ascendingDate"}>Date, ascending</MenuItem>
-                                <MenuItem value={"descendingDate"}>Date, descending</MenuItem>
-                                <MenuItem value={"ascendingService"}>Service Duration, ascending</MenuItem>
-                                <MenuItem value={"descendingService"}>Service Duration, descending</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <Button className='bg-gradient-to-r from-[#71aa48] to-[#314a25] text-white border font-extralight
-            hover:font-semibold py-2 px-2 m-2 rounded hover:to-[#bcdd15] self-end w-[10%]'
+                <InputLabel>Sort</InputLabel>
+                <Select
+                    labelId="sort"
+                    id="sort"
+                    value={sort}
+                    variant="outlined"
+                    label="Sort"
+                    onChange={(e: SelectChangeEvent) => {sortBookItems(e.target.value)}}
+                >
+                    <MenuItem value={"none"}>Default Ordering</MenuItem>
+                    <MenuItem value={"ascendingDate"}>Date, ascending</MenuItem>
+                    <MenuItem value={"descendingDate"}>Date, descending</MenuItem>
+                    <MenuItem value={"ascendingService"}>Service Duration, ascending</MenuItem>
+                    <MenuItem value={"descendingService"}>Service Duration, descending</MenuItem>
+                </Select>
+            </FormControl>
+            <Button className='bg-gradient-to-r from-[#71aa48] to-[#314a25] text-white border font-extralight
+            hover:font-semibold py-2 px-2 rounded hover:to-[#bcdd15] w-[150px]'
             onClick={()=>{setIsFilterModalOpen(true)}} style={{textShadow: "1px 1px 1px black"}}>
                 Filter Options
             </Button>
             </div>
-                <div className="">
+                <div className="w-3/4 mx-auto">
                 {
                     bookItems.length !== 0 ?
                     bookItems.map((bookItem)=>(
