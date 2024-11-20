@@ -29,6 +29,7 @@ export default function BookingList() {
     }
     const retrieveBookings = async () => { 
         if (!token){
+            setIsLoading(false)
             return
         }
         const booking = await getBookings(token)
@@ -114,8 +115,8 @@ export default function BookingList() {
                                 onChange={(e: SelectChangeEvent) => {sortBookItems(e.target.value)}}
                             >
                                 <MenuItem value={"none"}>Default Ordering</MenuItem>
-                                <MenuItem value={"ascendingDate"}>Date, Ascending</MenuItem>
-                                <MenuItem value={"descendingDate"}>Date, Descending</MenuItem>
+                                <MenuItem value={"ascendingDate"}>Date, ascending</MenuItem>
+                                <MenuItem value={"descendingDate"}>Date, descending</MenuItem>
                                 <MenuItem value={"ascendingService"}>Service Duration, ascending</MenuItem>
                                 <MenuItem value={"descendingService"}>Service Duration, descending</MenuItem>
                             </Select>
