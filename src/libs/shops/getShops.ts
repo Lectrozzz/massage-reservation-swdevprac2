@@ -6,6 +6,5 @@ export default async function getShops(){
         throw new Error("Cannot get shops")
     }
     const data = await response.json()
-    console.log("shops data", data.data)
     return data.data
 }

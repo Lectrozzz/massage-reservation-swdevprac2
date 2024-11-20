@@ -53,10 +53,18 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
             return
         }
         setIsLoading(true)
-        const bookingDetail = await getBookingByID(token,params.bid)    
+        const response = await getBookingByID(token,params.bid)
+        
+        if (response.status === 401 || response.status === 500)
+        {
+            setIsLoading(false)
+            return
+        }
+        const data = await response.json()
+        const bookingDetail = data.data
         setBookingInfo(bookingDetail)
         setBookingDate(bookingDetail.bookingDate.split('T')[0])
-        console.log(validateBookingDate(bookingDate))
+        
         if(validateBookingDate(bookingDate) !== '') setIsDateError(true)
         setServiceMinute(bookingDetail.serviceMinute)
         setIsLoading(false)
@@ -72,17 +80,17 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
                 createdAt: toSendCreatedAt
             }
             const updateDetail = await updateBookingByID(token,bookingInfo?._id,booking)
-            console.log(updateDetail)
+            
             router.push(`/mybooking`)
             setIsSaveModalOpen(false)
         }
     }
       
     const checkValidChange = () => {
-        console.log(bookingDate)
+        
         if (validateBookingDate(bookingDate) !== '') return
-        console.log(serviceMinute)
-        console.log(validateServiceMinute(serviceMinute))
+        
+        
         if (validateServiceMinute(serviceMinute) !== '') return
         if ((bookingDate === bookingInfo?.bookingDate.split('T')[0]) 
             && (serviceMinute === bookingInfo.serviceMinute)) {
@@ -95,7 +103,7 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
     }
     const checkValidRetrieve = () => {
         if (!bookingInfo && token)
-            setReason("Sorry, no information available")
+            setReason("Sorry, no information available.")
     }
     const router = useRouter()
 
@@ -107,7 +115,7 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
         checkValidChange()
     },[bookingDate,serviceMinute])
     useEffect(() =>{
-        if(!isLoading && token) checkValidChange()
+        if(!isLoading && token) checkValidRetrieve()
     },[isLoading])
 
     
@@ -130,7 +138,6 @@ export default function BookingDetail( {params}: {params : {bid:string}}){
                         if (newValue && context.validationError === null) {
                             setIsDateError(false)
                             setBookingDate(newValue.add(1,'day').toISOString().split('T')[0]); 
-                            console.log(validChange)
                             return
                         }
                         setIsDateError(true)

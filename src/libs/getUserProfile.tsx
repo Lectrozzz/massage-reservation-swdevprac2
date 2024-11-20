@@ -6,6 +6,6 @@ export default async function getUserProfile(token:string){
         }
         })
     const data = await response.json()
-    console.log("user data", data.data)
+    
     return data.data
 }

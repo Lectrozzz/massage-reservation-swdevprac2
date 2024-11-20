@@ -12,6 +12,6 @@ export default async function userLogIn(loginData: Login) {
         body: JSON.stringify(loginData),
     })
     const data = await response.json()
-    console.log(data)
+    
     return data
 }

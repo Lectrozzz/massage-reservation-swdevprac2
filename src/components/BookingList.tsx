@@ -32,7 +32,7 @@ export default function BookingList() {
             return
         }
         const booking = await getBookings(token)
-        console.log(booking)
+        
         setOriginalBookItems(booking)
         setBookItems(booking)
         setIsLoading(false)
@@ -40,7 +40,7 @@ export default function BookingList() {
 
     useEffect(() =>{
         retrieveBookings()
-        console.log()
+        
     },[token])
 
     const sortBookItems = (option: string) => {

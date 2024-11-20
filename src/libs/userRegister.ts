@@ -16,7 +16,7 @@ export default async function userRegister(registerData:Register) {
         body: JSON.stringify(registerData),
     })
     if(!response.ok){
-        console.log(response)
+        
         throw new Error("Failed to register user")
     }
     const data = await response.json()

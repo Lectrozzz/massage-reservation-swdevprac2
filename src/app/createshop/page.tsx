@@ -27,7 +27,7 @@ const createShopPage = () => {
             router.push("/login")
             return
         }
-        console.log("Create Shop")
+        
         const shopData = {
             name: shopName,
             address: shopAddress,
@@ -38,7 +38,7 @@ const createShopPage = () => {
             picture: picture
         }
         const response = await createShop({shopData, token})
-        console.log(response)
+        
         if(response.success){
             router.push(`/shops`)
         }

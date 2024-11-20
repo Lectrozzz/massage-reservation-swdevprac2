@@ -13,7 +13,7 @@ const shopItem = (shop: any) => {
     //validate picture url or file path
     const regex = /https?:\/\/.*\.(?:png|jpg|jpeg|gif)/
     const pictureUrl = (regex.test(shop.picture)) ? shop.picture : '/img/default_shop.jpg'
-    console.log("picture url",pictureUrl)
+    
     return (
         <div key={shop.id} className="bg-gradient-to-br from-[#a2ab45] to-[#D3D989] rounded-lg w-full px-5 py-5 flex flex-auto flex-col justify-center mx-auto">
             <div>
@@ -47,7 +47,7 @@ const shopsPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const createShopHandler = () => {
-        console.log("Create shop")
+        
         router.push(`/createshop`)
     }
 

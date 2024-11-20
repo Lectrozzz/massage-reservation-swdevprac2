@@ -14,6 +14,5 @@ export default async function getBookings(token:string):Promise<BookingItem[]> {
     }
 
     const data = await response.json()
-    console.log("booking data", data.data)
     return data.data
 }

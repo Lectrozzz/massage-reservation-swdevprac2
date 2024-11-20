@@ -42,7 +42,7 @@ const shopDetailPage = () => {
             router.push("/login")
             return
         }
-        console.log("Create booking")
+        
         router.push(`/shops/${params.sid}/booking`)
     }
 
@@ -60,7 +60,7 @@ const shopDetailPage = () => {
                 tel: tel,
                 picture: newPictureUrl
             }
-            console.log("Update shop")
+            
             const response = await updateShop({shopId: params.sid, shopData, token})
             router.push(`/shops`)
         }
@@ -76,7 +76,7 @@ const shopDetailPage = () => {
     const deleteShopHandler = async () => {
         if(!token) return
         try{
-            console.log("Delete shop")
+            
             await deleteShop(params.sid, token)
             router.push(`/shops`)
         }

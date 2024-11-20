@@ -39,9 +39,9 @@ const createBookingPage = () => {
             serviceMinute: serviceMinute,
             createdAt: dayjs().toISOString().split('T')[0]
         }
-        console.log("Create Booking")
+       
         const response = await createBooking({bookData, token, sid:shopId})
-        console.log(response.status)
+       
         if (response.status === 400 || response.status === 404){
             setIsCreateModalOpen(false)
             setShowError(true)
@@ -53,8 +53,7 @@ const createBookingPage = () => {
 
     const checkValidBooking = async () => {
         if (validateBookingDate(bookingDate) !== '') return false
-        console.log(serviceMinute)
-        console.log(validateServiceMinute(serviceMinute))
+        
         if (validateServiceMinute(serviceMinute) !== '') return
         
         setIsServiceMinuteError(false)
@@ -94,7 +93,7 @@ const createBookingPage = () => {
                             {showError ? <ErrorModal isOpen={showError} onClose={()=>setShowError(false)} text={errorMessage}/> : null}
                         </div>
                 <div className="justify-end flex">
-                    <Button className="bg-sky-500 text-white" disabled ={isDateError} onClick={()=>{setIsCreateModalOpen(true); console.log(bookingDate)}}>Create Booking</Button>
+                    <Button className="bg-sky-500 text-white" disabled ={isDateError} onClick={()=>{setIsCreateModalOpen(true)}}>Create Booking</Button>
                     <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} 
                     handler={createBookingHandler} text={"Are you sure that you want to create booking with this information?"} />
                 </div>

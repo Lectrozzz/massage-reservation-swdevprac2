@@ -9,6 +9,5 @@ export default async function deleteShop(shopId: string, token: string){
         throw new Error("Cannot delete shop")
     }
     const data = await response.json()
-    console.log("shop data", data.data)
     return data.data
 }

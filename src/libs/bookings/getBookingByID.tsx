@@ -1,6 +1,6 @@
 import { BookingItem } from "../../../interfaces"
 
-export default async function getBookingByID(token:string,bid:string):Promise<BookingItem> {
+export default async function getBookingByID(token:string,bid:string){
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL +"/api/v1/bookings/"+bid,
         {
             method:"GET",
@@ -9,11 +9,5 @@ export default async function getBookingByID(token:string,bid:string):Promise<Bo
             }
             }
     )
-    if (!response.ok) {
-        throw new Error("Cannot get bookings")
-    }
-
-    const data = await response.json()
-    console.log("booking data", data.data)
-    return data.data
+    return response
 }
